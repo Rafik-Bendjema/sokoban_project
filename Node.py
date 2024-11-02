@@ -1,6 +1,5 @@
 import pygame
 import SokobanPuzzle
-import queue
 
 class Node:
    
@@ -42,25 +41,30 @@ class Node:
 
 
     def getSolution(self):
-        open_set = queue.Queue()
-        closed_set = set()  # Use a set for faster lookup
+        open_set = [self]  # Start with the initial node in the open set
+        closed_set = []  # Use a set for visited nodes to speed up lookup
 
-        if self.state.isGoal():
-            return self 
-        
-        open_set.put(self)  # Enqueue initial node
+        while open_set:
+            current = open_set.pop(0)  # Take the first element from open_set
+            
+            if current.state.isGoal():
+                return current  # Return the node if it's the goal
 
-        while not open_set.empty(): 
-            current = open_set.get()
-            closed_set.add(current.state)  # Mark state as visited
+            closed_set.append(current.state.grid)  # Mark current state as visited
 
-            for (action, successor) in current.state.successorFunction():
+            for action, successor in current.state.successorFunction():
                 child = Node(successor, current, action)
-                
+
+                # Check if this child state is the goal
                 if child.state.isGoal():
                     return child
-                
-                if successor not in closed_set:
-                    open_set.put(child)
+
+                # Add child to open_set if not already in closed_set or open_set
+                if successor.grid not in closed_set and all(
+                    node.state.grid != successor.grid for node in open_set):
+                    open_set.append(child)
         
-        return None
+        return None  # Return None if no solution is found
+
+        
+        
