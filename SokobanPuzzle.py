@@ -140,6 +140,22 @@ class SokobanPuzzle:
                 if self.grid[row][col] == 'R' or self.grid[row][col] == '.':
                     return (row, col)
         return None
+    
+    def find_boxes(self):
+        box_positions = []
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid[0])):
+                if self.grid[row][col] == 'B' or self.grid[row][col] == '*' :
+                    box_positions.append((row, col))
+        return box_positions
+    
+    def find_storages(self):
+        box_positions = []
+        for row in range(len(self.grid)):
+            for col in range(len(self.grid[0])):
+                if self.grid[row][col] == 'S' or self.grid[row][col] == '.' or self.grid[row][col] == '*':
+                    box_positions.append((row, col))
+        return box_positions
 
     def move(self, direction):
         successors = []  
@@ -184,3 +200,4 @@ class SokobanPuzzle:
             
         return self.board
     
+
