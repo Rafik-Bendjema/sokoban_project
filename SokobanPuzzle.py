@@ -48,39 +48,46 @@ class SokobanPuzzle:
                 if self.grid[row][col] == 'B':  
                     
                     if self.is_deadlock_line(row, col, horizontal):
+                        print(f"dead line at {row} , {col} with the grid {self.grid}")
                         return True
                     
                     if self.is_deadlock_line(row, col, vertical):
+                        print(f"dead line at {row} , {col} with the grid {self.grid}")
                         return True
         return False
 
     def is_deadlock_line(self, row, col, direction_pair):
-        
+        # This will check for a wall boundary on each side (both left-right or up-down)
         for d_row, d_col in direction_pair:
-            side_wall = True
+            side_wall_left, side_wall_right = True, True
+
+            # Check left (or up) side
             current_row, current_col = row, col
-
-            
             while 0 <= current_row < len(self.grid) and 0 <= current_col < len(self.grid[0]):
-                next_row, next_col = current_row + d_row, current_col + d_col
+                # If we encounter a cell that is not a wall on the left/up side, set flag to False
+                if self.grid[current_row][current_col] != 'O':
+                    side_wall_left = False
+                    break
+                current_row += -d_row
+                current_col += -d_col
 
-                
-                if 0 <= next_row < len(self.grid) and 0 <= next_col < len(self.grid[0]):
-                    if self.grid[next_row][next_col] != 'O':  
-                        side_wall = False
-                        break
-                else:
-                    break  
-
-                
+            # Check right (or down) side
+            current_row, current_col = row, col
+            while 0 <= current_row < len(self.grid) and 0 <= current_col < len(self.grid[0]):
+                # If we encounter a cell that is not a wall on the right/down side, set flag to False
+                if self.grid[current_row][current_col] != 'O':
+                    side_wall_right = False
+                    break
                 current_row += d_row
                 current_col += d_col
 
-            
-            if side_wall:
+            # If both sides are completely walled, it's a deadlock
+            if side_wall_left and side_wall_right:
                 return True
 
         return False
+
+
 
                         
 
